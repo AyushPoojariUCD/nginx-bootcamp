@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ws-deployment
+  namespace: nginx-bootcamp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ws
+  template:
+    metadata:
+      labels:
+        app: ws
+    spec:
+      containers:
+      - name: ws
+        image: your-dockerhub-user/ws:latest
+        ports:
+        - containerPort: 3000

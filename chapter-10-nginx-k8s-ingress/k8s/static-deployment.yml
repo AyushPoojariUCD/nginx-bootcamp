@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: static-deployment
+  namespace: nginx-bootcamp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: static
+  template:
+    metadata:
+      labels:
+        app: static
+    spec:
+      containers:
+      - name: static
+        image: nginx:alpine
+        volumeMounts:
+        - name: static-content
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: static-content
+        hostPath:
+          path: /path/to/static
+          type: Directory
