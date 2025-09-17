@@ -1,11 +1,4 @@
-# 🚀 Next up: Chapter 3 – Load Balancing with NGINX
-
-
 ---
-
-In this chapter, you’ll learn how NGINX can distribute traffic across multiple backend servers (instead of just one), improving performance and reliability.
-
-
 # 📘 Chapter 3: Load Balancing with NGINX
 
 In this chapter, I’ll configure **NGINX as a load balancer** to distribute requests across multiple backend services.  
@@ -42,6 +35,7 @@ chapter-03-load-balancing/
 We’ll create **two Node.js servers**:
 
 **`app/server1.js`**
+
 ```js
 const express = require('express');
 const app = express();
@@ -54,10 +48,11 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server 1 running on port ${PORT}`);
 });
-
+```
 
 app/server2.js
 
+```
 const express = require('express');
 const app = express();
 const PORT = 3002;
@@ -69,24 +64,25 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server 2 running on port ${PORT}`);
 });
-
+```
 
 app/Dockerfile
-
+```
 FROM node:18-alpine
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 COPY . .
 CMD ["node", "server1.js"]
-
+```
 
 We’ll override which server file runs using command: in docker-compose.
 
-⚡ Step 2: NGINX Load Balancer Config
+## ⚡ Step 2: NGINX Load Balancer Config
 
 configs/nginx.conf
 
+```
 events {}
 
 http {
@@ -105,16 +101,17 @@ http {
         }
     }
 }
-
+```
 
 upstream backend_servers → Defines a pool of servers.
 
 NGINX will use round-robin load balancing by default.
 
-⚡ Step 3: Docker Compose Setup
+## ⚡ Step 3: Docker Compose Setup
 
 docker-compose.yml
 
+```
 version: '3.8'
 
 services:
@@ -146,8 +143,9 @@ services:
     depends_on:
       - app1
       - app2
+```
 
-🌐 Step 4: Run & Test
+## 🌐 Step 4: Run & Test
 
 Start everything:
 
@@ -156,8 +154,9 @@ docker-compose up --build
 
 Now test with multiple requests:
 
+```
 curl http://localhost:8080
-
+```
 
 Expected alternating responses:
 
@@ -167,16 +166,15 @@ Hello from Backend Server 2 🎯
 
 Refresh multiple times in your browser → requests should alternate between Server 1 and Server 2.
 
-📊 Step 5: Logs
+## 📊 Step 5: Logs
 
 Check logs to confirm load balancing:
 
+```
 docker-compose logs -f app1
 docker-compose logs -f app2
-
+```
 
 You should see requests hitting both servers.
 
-✅ What You Learned
-
-How to configure NGINX as a load balancer.
+---
